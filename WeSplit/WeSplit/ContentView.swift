@@ -11,7 +11,7 @@ import SwiftUI
 struct ContentView: View {
 
     @State private var checkAmount = ""
-    @State private var numberOfPeople = 2
+    @State private var numberOfPeople = ""
     @State private var tipPercentage = 2
 
     let tipPercentages = [10, 15, 20, 25, 0]
@@ -24,7 +24,7 @@ struct ContentView: View {
     }
 
     var totalPerPerson: Double {
-        let peopleCount = Double(numberOfPeople + 2)
+        let peopleCount = Double(numberOfPeople) ?? 1
         let amountPerPerson = grandTotal / peopleCount
         return amountPerPerson
     }
@@ -35,13 +35,16 @@ struct ContentView: View {
                 Section {
                     TextField("Amount:", text: $checkAmount)
                         .keyboardType(.decimalPad)
+                    TextField("Number of people:", text: $numberOfPeople)
+                    .keyboardType(.numberPad)
                 }
 
-                Picker("Number of people", selection: $numberOfPeople) {
-                    ForEach(2 ..< 100) {
-                        Text("\($0) people")
-                    }
-                }
+
+//                Picker("Number of people", selection: $numberOfPeople) {
+//                    ForEach(2 ..< 100) {
+//                        Text("\($0) people")
+//                    }
+//                }
 
                 Section(header: Text("How much tip do you want to leave?")) {
                     Picker("Tip percentage", selection: $tipPercentage) {
