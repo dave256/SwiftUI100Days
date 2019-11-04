@@ -55,7 +55,7 @@ struct ContentView: View {
         }
 
         guard isReal(word: answer) else {
-            wordError(title: "Word not possible", message: "That isn't a real word.")
+            wordError(title: "Word not possible", message: "That isn't a real word, is too short, or is the original word.")
             return
         }
         
@@ -93,6 +93,9 @@ struct ContentView: View {
     }
 
     func isReal(word: String) -> Bool {
+        if word.count < 3 || word == rootWord {
+            return false
+        }
         let checker = UITextChecker()
         let range = NSRange(location: 0, length: word.utf16.count)
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
