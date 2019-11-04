@@ -18,6 +18,11 @@ struct ContentView: View {
     @State private var errorMessage = ""
     @State private var showingError = false
 
+    var score: Int {
+        // 5 points for each word, plus a point for each letter in a word greater than 3
+        5 * usedWords.count + usedWords.filter { $0.count > 3 }.map { $0.count - 3 }.reduce(0, +)
+    }
+
     var body: some View {
         NavigationView {
             VStack {
@@ -29,6 +34,7 @@ struct ContentView: View {
                     Image(systemName: "\($0.count).circle")
                     Text($0)
                 }
+                Text("Score: \(score)")
             }
             .navigationBarTitle(rootWord)
                 .navigationBarItems(leading:
