@@ -16,6 +16,8 @@ struct AddView: View {
     @State private var type = "Personal"
     @State private var amount = ""
 
+    @State private var showingErrorAlert = false
+
     static let types = ["Business", "Personal"]
 
     var body: some View {
@@ -37,9 +39,15 @@ struct AddView: View {
                     self.expenses.items.append(item)
                     self.presentationMode.wrappedValue.dismiss()
                 } else {
-
+                    self.showingErrorAlert = true
                 }
             })
+                .alert(isPresented: $showingErrorAlert) {
+                    Alert(title: Text("Error"), message:
+                        Text("Cannot convert \(self.amount) to an integer."),
+                          dismissButton: .default(Text("Ok")) {
+                        })
+            }
         }
     }
 }
