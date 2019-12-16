@@ -13,6 +13,16 @@ struct ExpenseItem: Identifiable, Codable {
     let name: String
     let type: String
     let amount: Int
+
+    var expenseIndex: Int {
+        if amount < 10 {
+            return 0
+        } else if amount < 100 {
+            return 1
+        } else {
+            return 2
+        }
+    }
 }
 
 class Expenses: ObservableObject {
@@ -42,6 +52,9 @@ struct ContentView: View {
     @ObservedObject var expenses = Expenses()
     @State private var showingAddExpense = false
 
+    let categoryColors: [Color] = [.green, .black, .red]
+    let categoryFontWeight: [Font.Weight] = [.regular, .black, .heavy]
+
     var body: some View {
         NavigationView {
             List {
@@ -54,6 +67,8 @@ struct ContentView: View {
                         }
                         Spacer()
                         Text("$\(item.amount)")
+                            .fontWeight(self.categoryFontWeight[item.expenseIndex])
+                            .foregroundColor(self.categoryColors[item.expenseIndex])
                     }
                 }
                 .onDelete(perform: removeItems)
