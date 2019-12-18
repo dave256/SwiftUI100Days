@@ -120,11 +120,28 @@ struct Spirograph: Shape {
 
 struct ContentView: View {
 
+    @State private var lineWidth: CGFloat = 1.0
 
     var body: some View {
-        Arrow().stroke(Color.red, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
-        .frame(width: 100, height: 300)
+        VStack {
+            ZStack {
+                // make white rectangle around arrow so can use it for tap gesture (otherwise need to tap exactly on arrow border)
+                Color(.white).frame(minWidth:180, maxWidth: .infinity, minHeight: 450, maxHeight: .infinity)
+                .onTapGesture {
+                    withAnimation {
+                        // force random choice to be different by at least three from current value
+                        if self.lineWidth < 10 {
+                            self.lineWidth = CGFloat(Int.random(in: 12...20))
+                        } else {
+                            self.lineWidth = CGFloat(Int.random(in: 1...7))
+                        }
+                    }
+                }
+                Arrow().stroke(Color.red, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)).frame(width: 150, height: 400)
 
+            }
+            Slider(value: $lineWidth, in: 1...20)
+        }
     }
 }
 
