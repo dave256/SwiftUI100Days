@@ -21,6 +21,30 @@ struct Triangle: Shape {
     }
 }
 
+struct Arrow: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        let width = rect.maxX - rect.minX
+        let height = rect.maxY - rect.minY
+        let arrowBottomY = rect.minY + 0.2 * height
+        let arrowHalfWidth = 0.25 * width
+
+
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX, y: arrowBottomY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: arrowBottomY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.move(to: CGPoint(x: rect.midX - arrowHalfWidth, y: arrowBottomY))
+        path.addLine(to: CGPoint(x: rect.midX - arrowHalfWidth, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.midX + arrowHalfWidth, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.midX + arrowHalfWidth, y: arrowBottomY))
+        path.addLine(to: CGPoint(x: rect.midX - arrowHalfWidth, y: arrowBottomY))
+
+        return path
+    }
+}
+
 struct Flower: Shape {
 
     var petalOffset: Double = -20
@@ -95,44 +119,12 @@ struct Spirograph: Shape {
 }
 
 struct ContentView: View {
-    @State private var innerRadius = 125.0
-    @State private var outerRadius = 75.0
-    @State private var distance = 25.0
-    @State private var amount: CGFloat = 1.0
-    @State private var hue = 0.6
+
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        Arrow().stroke(Color.red, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+        .frame(width: 100, height: 300)
 
-            Spirograph(innerRadius: Int(innerRadius), outerRadius: Int(outerRadius), distance: Int(distance), amount: amount)
-                .stroke(Color(hue: hue, saturation: 1, brightness: 1), lineWidth: 1)
-                .frame(width: 300, height: 300)
-
-            Spacer()
-
-            Group {
-                Text("Inner radius: \(Int(innerRadius))")
-                Slider(value: $innerRadius, in: 10...150, step: 1)
-                    .padding([.horizontal, .bottom])
-
-                Text("Outer radius: \(Int(outerRadius))")
-                Slider(value: $outerRadius, in: 10...150, step: 1)
-                    .padding([.horizontal, .bottom])
-
-                Text("Distance: \(Int(distance))")
-                Slider(value: $distance, in: 1...150, step: 1)
-                    .padding([.horizontal, .bottom])
-
-                Text("Amount: \(amount, specifier: "%.2f")")
-                Slider(value: $amount)
-                    .padding([.horizontal, .bottom])
-
-                Text("Color")
-                Slider(value: $hue)
-                    .padding(.horizontal)
-            }
-        }
     }
 }
 
