@@ -31,10 +31,12 @@ class Order: ObservableObject, Codable {
     @Published var zip = ""
 
     var hasValidAddress: Bool {
-        if name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty {
-            return false
+        for field in [\Order.name, \Order.streetAddress, \Order.city, \Order.zip] {
+            let trimmed = self[keyPath: field].trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty {
+                return false
+            }
         }
-
         return true
     }
 
