@@ -11,6 +11,7 @@ import SwiftUI
 struct CheckoutView: View {
     @ObservedObject var order: Order
     @State private var confirmationMessage = ""
+    @State private var alertTitle = ""
     @State private var showingConfirmation = false
 
     var body: some View {
@@ -33,7 +34,7 @@ struct CheckoutView: View {
             }
         }
         .alert(isPresented: $showingConfirmation) {
-            Alert(title: Text("Thank you!"), message: Text(confirmationMessage), dismissButton: .default(Text("OK")))
+            Alert(title: Text(alertTitle), message: Text(confirmationMessage), dismissButton: .default(Text("OK")))
         }
         .navigationBarTitle("Check out", displayMode: .inline)
     }
@@ -51,18 +52,23 @@ struct CheckoutView: View {
         request.httpBody = encoded
 
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                return
-            }
-            if let decodedOrder = try? JSONDecoder().decode(Order.self, from: data) {
-                self.confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
-                self.showingConfirmation = true
+            if let data = data {
+                if let decodedOrder = try? JSONDecoder().decode(Order.self, from: data) {
+                    self.alertTitle = "Thank you!"
+                    self.confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
+                    self.showingConfirmation = true
+                } else {
+                    self.alertTitle = "Error"
+                    self.confirmationMessage = "Invalid response from server"
+                    self.showingConfirmation = true
+                }
             } else {
-                print("Invalid response from server")
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                   self.alertTitle = "Error"
+                   self.confirmationMessage = "Error submitting order"
+                   self.showingConfirmation = true
             }
         }.resume()
-
     }
 }
 
