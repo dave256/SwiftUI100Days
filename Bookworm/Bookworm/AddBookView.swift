@@ -46,7 +46,7 @@ struct AddBookView: View {
                     Button("Save") {
                         self.addBook()
                     }
-                }
+                }.disabled(genre == "")
             }
             .navigationBarTitle("Add Book")
         }
