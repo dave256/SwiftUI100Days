@@ -9,6 +9,20 @@
 import SwiftUI
 import CoreData
 
+extension Book {
+
+    var formattedDate: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        if let date = date {
+            return dateFormatter.string(from: date)
+        } else {
+            return "no date"
+        }
+    }
+}
+
 struct DetailView: View {
     let book: Book
 
@@ -41,6 +55,8 @@ struct DetailView: View {
 
                 RatingView(rating: .constant(Int(self.book.rating)))
                     .font(.largeTitle)
+
+                Text("Date added: \(self.book.formattedDate)")
 
                 Spacer()
             }
